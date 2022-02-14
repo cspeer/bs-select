@@ -13,6 +13,8 @@ class Bss {
 	#create: Options['create']
 	#clear: Options['clear']
 	#maxHeight: Options['maxHeight']
+	#labels: Options['labels']
+	#autoClose: Options['autoClose']
 
 	#dropdown: HTMLDivElement
 	#dropdownToggle: HTMLButtonElement
@@ -29,6 +31,9 @@ class Bss {
 		this.#create = options?.create ?? selectElement.dataset.bssCreate !== undefined
 		this.#clear = options?.clear ?? selectElement.dataset.bssClear !== undefined
 		this.#maxHeight = options?.maxHeight || selectElement.dataset.bssMaxHeight || '25rem'
+		this.#labels = { search: 'Search', noResults: 'No results found', clear: 'Clear selection', addElement: 'Press Enter to add "<b>%{value}</b>"' }
+		this.#labels = options?.labels ? { ...this.#labels, ...options.labels } : this.#labels
+		this.#autoClose = (this.#target.dataset.bssAutoClose || options?.autoClose) ?? true
 
 		this.#createDropdown()
 		this.#updateDropdown()
@@ -45,17 +50,17 @@ class Bss {
 
 		const template = `
 		<div class="dropdown ${this.#classWrapper}">
-			<button type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+			<button type="button" data-bs-toggle="dropdown" data-bs-auto-close="${this.#autoClose}" aria-expanded="false"></button>
 			<div class="dropdown-menu" style="max-height:${this.#maxHeight}">
 				<div class="d-flex flex-column">
 					<div class="bss-search-wrapper">
-						<input type="text" class="form-control" placeholder="Search" onkeydown="return event.key !== 'Enter'">
+						<input type="text" class="form-control" placeholder="${this.#target.dataset.bssSearchLabel || this.#labels.search}" onkeydown="return event.key !== 'Enter'">
 					</div>
 					<div class="${this.#classItems}"></div>
-					<div class="${this.#classNoResults} ${this.#classItem} text-wrap ${this.#classHidden}">No results found</div>
+					<div class="${this.#classNoResults} ${this.#classItem} text-wrap ${this.#classHidden}">${this.#target.dataset.bssNoResultsLabel || this.#labels.noResults}</div>
 				</div>
 			</div>
-			<button class="btn ${this.#classClear}" tabindex="-1" type="button" title="Clear selection">
+			<button class="btn ${this.#classClear}" tabindex="-1" type="button" title="${this.#target.dataset.bssClearLabel || this.#labels.clear}">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="none">
 					<path d="M13 1L0.999999 13" stroke-width="2" stroke="currentColor"></path>
 					<path d="M1 1L13 13" stroke-width="2" stroke="currentColor"></path>
@@ -83,7 +88,7 @@ class Bss {
 		this.#dropdownToggle.disabled = this.#isDisabled
 		this.#target.classList.contains('form-select-sm') && this.#searchInput.classList.add('form-control-sm')
 		this.#target.classList.contains('form-select-lg') && this.#searchInput.classList.add('form-control-lg')
-		if (!this.#clear || this.#isMultiple || !this.#hasPlaceholder()) this.#clearBtn.remove()
+		if (!this.#clear) this.#clearBtn.remove()
 		if (!this.#search) {
 			this.#searchInput.parentElement.remove()
 			this.#noResults.remove()
@@ -97,7 +102,7 @@ class Bss {
 		items.innerHTML = ''
 		this.#itemsInner().forEach((i) => items.appendChild(i))
 
-		if (!this.#isMultiple && this.#target.value !== '' && this.#hasPlaceholder()) {
+		if (this.#target.value !== '' && this.#hasPlaceholder()) {
 			this.#dropdownToggle.setAttribute('data-show-clear', 'true')
 		} else {
 			this.#dropdownToggle.removeAttribute('data-show-clear')
@@ -151,7 +156,7 @@ class Bss {
 				this.#noResults.classList.remove(this.#classHidden)
 				// create
 				if (this.#create) {
-					this.#noResults.innerHTML = `Press Enter to add "<b>${value}</b>"`
+					this.#noResults.innerHTML = (this.#target.dataset.bssAddElement || this.#labels.addElement).replace('%{value}', value)
 					if (e.key === 'Enter') {
 						let opt = document.createElement('option')
 						opt.value = value
@@ -166,13 +171,15 @@ class Bss {
 		})
 
 		// clear
-		this.#clearBtn.addEventListener('click', () => {
-			Array.from(this.#target.options).forEach((i) => i.selected = false)
-			this.#hasPlaceholder() && (this.#target.value = '')
-			this.#change()
-		})
+		this.#clearBtn.addEventListener('click', () => this.clear())
 
 		this.#target.addEventListener('change', () => this.#updateDropdown())
+	}
+
+	clear () {
+		Array.from(this.#target.options).forEach((i) => i.selected = false)
+		this.#hasPlaceholder() && (this.#target.value = '')
+		this.#change()
 	}
 
 	setValue(value: string) {
@@ -263,4 +270,6 @@ interface Options {
 	create?: boolean
 	clear?: boolean
 	maxHeight?: string
+	labels?: object
+	autoClose: string
 }
