@@ -179,7 +179,7 @@ class Bss {
 	clear () {
 		Array.from(this.#target.options).forEach((i) => i.selected = false)
 		this.#hasPlaceholder() && (this.#target.value = '')
-		this.#change()
+		// this.#change() algolia instantsearch.js cant handle. can go back in, after we get rid off algolia
 	}
 
 	setValue(value: string) {

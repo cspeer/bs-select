@@ -154,7 +154,6 @@ class Bss {
   clear() {
     Array.from(this.#target.options).forEach((i) => i.selected = false);
     this.#hasPlaceholder() && (this.#target.value = "");
-    this.#change();
   }
   setValue(value) {
     this.#setSelectedOption(value, true);
