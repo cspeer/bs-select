@@ -31,7 +31,7 @@ class Bss {
 		this.#create = options?.create ?? selectElement.dataset.bssCreate !== undefined
 		this.#clear = options?.clear ?? selectElement.dataset.bssClear !== undefined
 		this.#maxHeight = options?.maxHeight || selectElement.dataset.bssMaxHeight || '25rem'
-		this.#labels = { search: 'Search', noResults: 'No results found', clear: 'Clear selection', addElement: 'Press Enter to add "<b>%{value}</b>"' }
+		this.#labels = { placeholder: '', search: 'Search', noResults: 'No results found', clear: 'Clear selection', addElement: 'Press Enter to add "<b>%{value}</b>"' }
 		this.#labels = options?.labels ? { ...this.#labels, ...options.labels } : this.#labels
 		this.#autoClose = (this.#target.dataset.bssAutoClose || options?.autoClose) ?? true
 
@@ -185,7 +185,7 @@ class Bss {
 
 	setValue(value: string) {
 		this.#setSelectedOption(value, true)
-		value !== '' && this.#setSelectedOption('', false)
+		this.#setSelectedOption('', false)
 		this.#change()
 	}
 
@@ -210,26 +210,29 @@ class Bss {
 
 	#dropdownToggleInner() {
 		const options = this.#target.options
-		let selected = Array.from(this.#target.selectedOptions)
+		const selected = Array.from(this.#target.selectedOptions)
 		if (selected.length < 1 && this.#isMultiple && this.#hasPlaceholder()) {
-			selected.push(options[0])
+			const opt       = document.createElement('option');
+			opt.value       = 'placeholder'
+			opt.textContent = this.#target.dataset.bssPlaceholder || this.#labels.placeholder
+
+			selected.push(opt)
 		}
 
 		return selected.map((i) => {
-			return i.value === ''
-			? this.#placeholder(i.innerHTML)
-			: (this.#isMultiple ? this.#tag(i) : i.innerHTML)
+			return i.value == 'placeholder' ? this.#placeholder(i.innerHTML) : (this.#isMultiple ? this.#tag(i) : i.innerHTML)
 		}).join('')
 	}
 
 	#itemsInner() {
-		let items = []
+		const items = []
 		this.#target.querySelectorAll(':scope>*').forEach((opt) => {
 			if (opt instanceof HTMLOptionElement) {
-				opt.value !== '' && items.push(this.#item(opt))
+				!opt.hidden && items.push(this.#item(opt))
 			}
+
 			if (opt instanceof HTMLOptGroupElement) {
-				let header = document.createElement('div')
+				const header = document.createElement('div')
 				header.classList.add(this.#classHeader)
 				header.innerHTML = `<span>${opt.label}</span>`
 				opt.querySelectorAll('option').forEach((i) => header.appendChild(this.#item(i)))
@@ -260,7 +263,7 @@ class Bss {
 	}
 
 	#hasPlaceholder() {
-		return this.#target.options.length && this.#target.options[0].value === ''
+		return (this.#target.dataset.bssPlaceholder || this.#labels.placeholder) !== ''
 	}
 }
 
