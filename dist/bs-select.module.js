@@ -179,12 +179,12 @@ class Bss {
     const selected = Array.from(this.#target.selectedOptions);
     if (selected.length < 1 && this.#isMultiple && this.#hasPlaceholder()) {
       const opt = document.createElement("option");
-      opt.value = "placeholder";
+      opt.hidden = true;
       opt.textContent = this.#target.dataset.bssPlaceholder || this.#labels.placeholder;
       selected.push(opt);
     }
     return selected.map((i) => {
-      return i.value == "placeholder" ? this.#placeholder(i.innerHTML) : this.#isMultiple ? this.#tag(i) : i.innerHTML;
+      return i.hidden ? this.#placeholder(i.innerHTML) : this.#isMultiple ? this.#tag(i) : i.innerHTML;
     }).join("");
   }
   #itemsInner() {
