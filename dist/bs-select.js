@@ -39,8 +39,7 @@
 	    this.#clear = options?.clear ?? selectElement.dataset.bssClear !== void 0;
 	    this.#maxHeight = options?.maxHeight || selectElement.dataset.bssMaxHeight || "25rem";
 	    this.#labels = { placeholder: "", search: "Search", noResults: "No results found", clear: "Clear selection", addElement: 'Press Enter to add "<b>%{value}</b>"' };
-	    this.#labels = options?.labels ? { ...this.#labels, ...options.labels } : this.#labels;
-	    this.#autoClose = (this.#target.dataset.bssAutoClose || options?.autoClose) ?? true;
+	    this.#autoClose = (this.#target.dataset.bssAutoClose == "true" || options?.autoClose) ?? true;
 	    this.#createDropdown();
 	    this.#updateDropdown();
 	    this.#registerEvents();
@@ -156,6 +155,14 @@
 	    });
 	    this.#clearBtn.addEventListener("click", () => this.clear());
 	    this.#target.addEventListener("change", () => this.#updateDropdown());
+	  }
+	  enable() {
+	    this.#isDisabled = false;
+	    this.#dropdownToggle.disabled = false;
+	  }
+	  disable() {
+	    this.#isDisabled = true;
+	    this.#dropdownToggle.disabled = true;
 	  }
 	  clear() {
 	    Array.from(this.#target.options).forEach((i) => i.selected = false);

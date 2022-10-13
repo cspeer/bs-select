@@ -32,8 +32,8 @@ class Bss {
 		this.#clear = options?.clear ?? selectElement.dataset.bssClear !== undefined
 		this.#maxHeight = options?.maxHeight || selectElement.dataset.bssMaxHeight || '25rem'
 		this.#labels = { placeholder: '', search: 'Search', noResults: 'No results found', clear: 'Clear selection', addElement: 'Press Enter to add "<b>%{value}</b>"' }
-		this.#labels = options?.labels ? { ...this.#labels, ...options.labels } : this.#labels
-		this.#autoClose = (this.#target.dataset.bssAutoClose || options?.autoClose) ?? true
+		// this.#labels = options?.labels ? { ...this.#labels, ...options.labels } : this.#labels
+		this.#autoClose = (this.#target.dataset.bssAutoClose === 'true' || options?.autoClose) ?? true
 
 		this.#createDropdown()
 		this.#updateDropdown()
@@ -176,6 +176,16 @@ class Bss {
 		this.#target.addEventListener('change', () => this.#updateDropdown())
 	}
 
+	enable () {
+		this.#isDisabled              = false;
+		this.#dropdownToggle.disabled = false;
+	}
+
+	disable () {
+		this.#isDisabled              = true;
+		this.#dropdownToggle.disabled = true;
+	}
+
 	clear () {
 		Array.from(this.#target.options).forEach((i) => i.selected = false)
 		this.#hasPlaceholder() && (this.#target.value = '')
@@ -274,6 +284,6 @@ interface Options {
 	create?: boolean
 	clear?: boolean
 	maxHeight?: string
-	labels?: object
-	autoClose: string
+	labels?: any
+	autoClose: boolean
 }
