@@ -15,5 +15,5 @@ interface Options {
     clear?: boolean;
     maxHeight?: string;
     labels?: any;
-    autoClose: boolean;
+    autoClose: string;
 }
