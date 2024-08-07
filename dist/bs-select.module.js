@@ -1,6 +1,6 @@
 /*!
 * @erwinstone/bs-select v1.0.2 (https://bs-select.vercel.app/)
-* Copyright 2022 erwinstone
+* Copyright 2024 erwinstone
 * Licensed under MIT (https://github.com/erwinstone/bs-select/blob/master/LICENSE)
 */
 class Bss {
