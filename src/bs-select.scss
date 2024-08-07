@@ -16,7 +16,7 @@ $bss-clear-icon-width: .625rem;
 		padding-left: $form-select-padding-x;
 		min-height: add($btn-line-height * 1em, add($btn-padding-y * 2, calc(#{$btn-border-width} * 2), false));
 		&.show { // ref: form-select:focus
-      border-color: var(--bs-body-color);
+      border-color: var(--bs-primary);
       outline: 0;
       @if $enable-shadows {
         @include box-shadow($form-select-box-shadow, $form-select-focus-box-shadow);
