@@ -7,9 +7,9 @@
   min-height: calc(1.5em + 0.75rem + calc(var(--bs-border-width) * 2));
 }
 .bss-wrapper .form-select.show {
-  border-color: #86b7fe;
+  border-color: var(--bs-body-color);
   outline: 0;
-  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 var(--bs-focus-ring-blur) var(--bs-focus-ring-width) var(--bs-focus-ring-color);
 }
 .bss-wrapper .form-select[data-show-clear]:not([disabled]) {
   padding-right: 3.25rem;

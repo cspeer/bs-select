@@ -16,13 +16,13 @@ $bss-clear-icon-width: .625rem;
 		padding-left: $form-select-padding-x;
 		min-height: add($btn-line-height * 1em, add($btn-padding-y * 2, calc(#{$btn-border-width} * 2), false));
 		&.show { // ref: form-select:focus
-      border-color: $form-select-focus-border-color;
+      border-color: var(--bs-body-color);
       outline: 0;
       @if $enable-shadows {
         @include box-shadow($form-select-box-shadow, $form-select-focus-box-shadow);
       } @else {
         // Avoid using mixin so we can pass custom focus shadow properly
-        box-shadow: $form-select-focus-box-shadow;
+        box-shadow: 0 0 var(--bs-focus-ring-blur) var(--bs-focus-ring-width) var(--bs-focus-ring-color);
       }
     }
 		&[data-show-clear]:not([disabled]) {
